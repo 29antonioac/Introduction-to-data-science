@@ -178,3 +178,157 @@ sample(x,5, replace = F)
 ls()
 ```
 
+# Explora el indexado de vectores
+
+## Ejecuta los siguientes comandos y comprueba su resultado
+
+```{r}
+x <- 1:10
+names(x) <- letters[x]
+
+x[1:3]
+x[c(1,10)]
+x[c(-1,-2)]
+x[ x > 5]
+x[c("a","d")]
+x[]
+x <- 1:10; y <- c(x[1:5],99,x[6:10]); y
+```
+
+## Crea un vector con números del 1 al 100 y extrae los valores del 2 al 23.
+
+```{r}
+x <- 1:100
+x[2:23]
+```
+
+## Del mismo vector x extrae ahora todos los valores menos del 2:23
+
+```{r}
+x[-(2:23)]
+```
+
+## Cambia el número en la posición 5 por el valor 99
+
+```{r}
+x[5] <- 99
+```
+
+## Crea un vector lógico del vector letters, (e.g. comprobando si existe c en el vector letters).
+
+```{r}
+letters == "c"
+```
+
+## ¿Qué devuelve el siguiente comando?
+
+```{r}
+which(rep(letters,2)=="c") 
+```
+
+Devuelve la posición en la que se da la condición de que la letra del vector sea `c`.
+## ¿Qué devuelve el siguiente comando?
+
+```{r}
+match(c("c","g"), letters) 
+```
+
+Devuelve la posición de dichas letras en el vector `letters`.
+
+## Crea un vector x de elementos -5 -1, 0, 1, . . . , 6. 
+
+```{r}
+x <- -5:6
+```
+
+### Escribe un código en R del tipo x[ 'something' ], para extraer
+
+* elementos de x menores que  0
+
+```{r}
+x[x < 0]
+```
+
+* elementos de x menores o igual que 0
+
+```{r}
+x[x <= 0]
+```
+
+* elementos of x mayor o igual que 3
+
+```{r}
+x[x >= 3]
+```
+
+* elementos de x menor que 0 o mayores que  4 
+
+```{r}
+x[x < 0 & x > 4]
+```
+
+* elementos de x mayor que 0 y menor que 4
+
+```{r}
+x[x > 0 & x < 4]
+```
+
+* elementos de x distintos de 0
+
+```{r}
+x[x != 0]
+```
+
+## El código is.na se usa para identificar valores ausentes (NA). Crea el vector x<- c(1,2,NA) y averigua que pasa cuando escribes is.na(x). Prueba con x[ x!=NA ] ¿obtienes con este comando los missing values de x?. ¿cuál es tu explicación?
+
+```{r}
+x <- c(1,2,NA)
+is.na(x)
+x[ x != NA ]
+```
+
+`is.na(x)` devuelve los missing values de `x` correctamente. Pero la otra expresión no es válida puesto que cualquier operación aritmética o de comparación con NA devolverá NA.
+
+## Determine what objects are in the current workspace
+
+```{r}
+objects()
+```
+
+# Búsqueda de valores idénticos y distintos en Vectores
+
+## Haz la intersección de dos vectores month.name[1:4] y  month.name[3:7] usando la función intersect().
+
+```{r}
+intersect(month.name[1:4], month.name[3:7])
+```
+
+## Recupera los valores idénticos entre dos vectores usando %in%. Esta función devuelve un vector lógico de los elementos idénticos. Utiliza esa función para poder extraer ese subset del vector original.
+
+```{r}
+x <- month.name[1:4]
+y <- month.name[3:7]
+x[ x %in% y ]
+```
+
+## Si x=month.name[1:4] e y=month.name[3:7] recupera los valores únicos en el primer vector. Para ello investiga la función diff().¿Puedes usarlo con caracteres?. Busca una alternativa.
+
+```{r}
+
+```
+
+
+## Une dos vectores sin duplicar las entradas repetidas. Investiga la función union().
+
+```{r}
+union(x,y)
+```
+
+`union()` ya descarta los valores repetidos, ya que trabaja sobre el concepto matemático de conjunto.
+
+## Recupera las entradas duplicadas de x
+
+```{r}
+duplicated(x)
+```
+
