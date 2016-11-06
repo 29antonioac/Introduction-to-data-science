@@ -1,0 +1,65 @@
+---
+title: "R Visualization"
+author: "Antonio Álvarez Caballero"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(plotly)
+```
+
+# Plot distance against stretch
+
+```{r}
+distances <- data.frame(stretch  = c(46,54,48,50,44,42,52),
+                        distance = c(148,182,173,166,109,141,166))
+ggplot(distances, aes(stretch, distance)) + geom_point() + scale_x_continuous(breaks = 42:54)
+```
+
+\newpage
+# Plot snow.cover versus year. Plot a histogram of the snow.cover values.
+```{r}
+snow <- data.frame(year = 1970:1979,
+                   snow.cover = c(6.5,12,14.9,10,10.7,7.9,21.9,12.5,14.5,9.2))
+ggplot(snow, aes(year, snow.cover)) + geom_point() + scale_x_continuous(breaks = 1970:1979)
+ggplot(snow, aes(snow.cover)) + geom_histogram(aes(fill = ..count..), binwidth = 5)
+```
+
+\newpage
+# New York exercise
+
+```{r}
+NY <- read.csv("NY.csv")
+
+# ºF to ºC and In to mm
+
+NY.new <- data.frame(Year = NY[,1],
+                         lapply(NY[,2:8], function(x) { (x - 32) * 5/9}),
+                         lapply(NY[,9:12], function(x) {25.4 * x}))
+
+ggplot(NY.new, aes(Year, Warmest.Minimum.Temperature..F., colour = "red")) +
+  geom_line() + 
+  geom_point() +
+  ylab("Temperature") +
+  theme(legend.position="none")
+```
+
+\newpage
+```{r}
+# Using reshape package
+colnames(NY.new)[4] <- "Warmest Minimum" 
+colnames(NY.new)[5] <- "Coldest Minimum"
+NY.plot <- reshape2::melt(NY.new, id.vars = "Year", 
+                          measure.vars = c("Warmest Minimum", 
+                                           "Coldest Minimum"), value.name = "Temperature")
+# Much better with plotly
+ggplotly(ggplot(NY.plot, aes(Year)) + 
+  geom_line(aes(y = Temperature, colour = variable)) + 
+  geom_point(aes(y = Temperature, colour = variable)) + 
+  ylab("Temperature ºC") +
+  theme(legend.title=element_blank()))
+```
+
+
