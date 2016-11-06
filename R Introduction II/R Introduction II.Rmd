@@ -1,0 +1,214 @@
+---
+title: "R Introduction II"
+author: "Antonio Álvarez Caballero"
+date: "6 de noviembre de 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Matrices
+
+## Ejecuta los siguientes comandos. 
+
+```{r}
+matrix(data=5, nr=2, nc=2)
+
+matrix(1:6, 2, 3)
+
+matrix(1:6, 2, 3, byrow=TRUE)
+```
+
+
+## Crea un vector z con los 30 primeros números y crea con el una matriz m con 3 filas y 10 columnas.
+
+```{r}
+z <- 1:30
+m <- matrix(z, nrow = 3)
+```
+
+## Escribe la tercera columna en un vector
+
+```{r}
+v <- m[,3]
+```
+
+## Crea en R las matrices x e y. Calcula los efectos de los siguientes comandos.
+
+```{r}
+x <- matrix(c(3,2,-1,1), nrow = 2, byrow = TRUE)
+y <- matrix(c(1,4,0,0,1,-1), nrow = 2, byrow = TRUE)
+```
+
+```{r}
+x[1,]
+x[2,]
+x[,2]
+y[1,2]
+y[,2:3] 
+```
+
+## Transforma la matriz m que creástes en el ejercicio anterior en un array multidimensional. Pista: averigua lo que puedas de la función dim().
+
+## Crea un array x de 5 x 5 y rellénalo con valores del 1 al 25. Investiga la función array(). 
+
+## Escribe el array x en un vector y
+
+## Dadas las matrices  m1 y m2 usa rbind() y cbind() para crear matrices nuevas. para crear matrices nuevas utilizando estas funciones, llamalas M1 y M2.¿En que se diferncian las matrices creadas?
+
+```{r}
+m1 <- matrix(1, nr = 2, nc = 2)
+m2 <- matrix(2, nr = 2, nc = 2)
+
+M1 <- cbind(m1,m2)
+M2 <- rbind(m1,m2)
+```
+
+## El operador para el producto de dos matrices es ‘ % * %’. Por ejemplo, considerando las dos matrices creadas en el ejercicio anterior utilízalo.
+
+```{r}
+m1 %*% m2
+```
+
+## Usa la matriz M1 del ejercicio anterior y aplica la función t(). ¿qué hace esa función?
+
+```{r}
+t(M1)
+```
+
+Esta función traspone la matriz indicada.
+
+## Ejecuta los siguientes comandos basados en la función diag() sobre las matrices creadas anteriormente m1 y m2. ¿Qué tipo de acciones puedes ejecutar con ella?
+
+```{r}
+diag(m1)
+
+diag(rbind(m1, m2) %*% cbind(m1, m2))
+
+diag(m1) <- 10
+
+diag(3)
+v <- c(10, 20, 30)
+diag(v)
+
+diag(2.1, nr = 3, nc = 5)
+```
+
+Con `diag()` se extrae o reemplaza la diagonal de la matriz pasada por argumento.
+
+## Crea los siguientes vectores. Los datos se corresponden con las ventas en millones de la trilogía de la guerra de las galaxias. El primer numero corresponde a las ventas en US y el segundo al resto de países.
+
+```{r}
+# Box office Star Wars: In Millions (!)  First element: US, Second element:
+# Non-US
+new_hope = c(460.998007, 314.4)
+empire_strikes = c(290.475067, 247.9)
+return_jedi = c(309.306177, 165.8)
+```
+
+### Construye la matriz star_wars_matrix con  esos vectores
+
+```{r}
+(star_wars_matrix <- matrix(c(new_hope,empire_strikes,return_jedi), ncol = 2, byrow = TRUE))
+```
+
+
+### Añádele nombres a las columnas y filas de la matriz según las descripciones dadas anteriormente de los datos
+
+```{r}
+colnames(star_wars_matrix) <- c("US sales","Non US sales")
+rownames(star_wars_matrix) <- c("A new hope","The empire strikes","The return of the jedi")
+star_wars_matrix
+```
+
+
+### Calcula las ganacias  mundiales de cada película y  guardalas en un vector que se llame worldwide_vector.
+
+```{r}
+(world_wide_sales <- rowSums(star_wars_matrix))
+```
+
+### Añade éste ultimo vector como una columna nueva a la matriz star_wars_matrix y asigna el resultado a all_wars_matrix. Usa para ello la función cbind().
+
+```{r}
+(all_wars_matrix <- cbind(star_wars_matrix,world_wide_sales))
+```
+
+### Calcula las ganancias totals en USA y fuera de USA para las tres películas. Puedes usar para ello la función colSums() 
+
+```{r}
+colSums(star_wars_matrix)
+```
+
+
+### Calcula la media de ganancias para todas las películas fuera de los estados unidos. Asigna esa media la variable non_us_all.
+
+```{r}
+(non_us_all <- mean(all_wars_matrix[,2]))
+```
+
+### Haz lo mismo pero solo par alas dos primeras películas . Asigna el resultado a la variable non_us_some.
+
+```{r}
+(non_us_some <- mean(all_wars_matrix[1:2,2]))
+```
+
+
+### Calcula cuantos visitantes hubo para cada película en cada área geográfica. Ya tienes las ganancias totales en star_wars_matrix. Asume que el precio de las entradas es de cinco euros/dólares (Nota: el numero total de visitantes para cada pelicula dividido por el precio del ticket te da el numero de visitantes)
+
+```{r}
+(visitors <- all_wars_matrix / 5.0)
+```
+
+### Calcula la media de visitantes en territorio USA y en territorio noUS.
+
+```{r}
+(mean_visitors <- apply(X = visitors, MARGIN = 2, FUN = mean))
+```
+
+
+# Subsetting matrices y arrays 
+
+
+## Como hemos visto en teoría la sintaxis para acceder tanto a matrices como a arrays bidimiensionales es la siguiente.
+
+```{r, eval = F}
+array[rows, columns] 
+```
+
+## Muchas funciones de R necesitan una matriz como dato de entrada. Si algo no funciona recuerda convertir el objeto a una matriz con la función
+
+##  Crea un array. ¿Que información te dan los siguientes comando?
+
+```{r}
+i <- array(c(1:10),dim=c(5,2))
+dim(i); 
+nrow(i); 
+ncol(i) 
+```
+
+
+## Crea un array i de dimensiones 5 filas y dos columnas y rellénalo con valores del 1-5 y del 5 al 1
+
+```{r}
+i <- array(c(1:5,5:1),dim=c(5,2))
+```
+
+## ¿Qué hace el comando x[i] ¿. Comprueba que tienes en x antes 
+
+```{r}
+
+```
+
+## ¿y el comando x[i] <- 0?
+
+## Descárgate el fichero array_datos.txt de SWAD (Practicas/Ficheros) e impórtalo en tu work space de R teniendo en cuenta que es un texto tabulado. Después crea un documento con el mismo pero en formato csv en vez de tab separated.
+
+```{r}
+datos <- read.delim("array_datos.txt")
+write.csv(datos, "array_datos.csv")
+```
+
+
