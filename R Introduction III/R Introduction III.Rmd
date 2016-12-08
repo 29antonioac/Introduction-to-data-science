@@ -1,0 +1,197 @@
+---
+title: "R Introduction III"
+author: "Antonio Álvarez Caballero"
+date: "8 de noviembre de 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(GGally)
+```
+
+# Lists
+
+## Ejemplo de cómo crear una lista. Ejecuta los comandos y describe que es lo que ocurre
+
+```{r}
+my_list <- list(name="Fred", wife="Mary", no.children=3, child.ages=c(4,7,9)) 
+attributes(my_list) 
+names(my_list) 
+my_list[2]
+my_list[[2]]
+my_list$wife
+my_list[[4]][2] 
+length(my_list[[4]]) 
+my_list$wife <- 1:12 
+my_list$wife <- NULL
+my_list <- c(my_list, list(my_title2=month.name[1:12]))
+unlist(my_list)
+data.frame(unlist(my_list))
+matrix(unlist(my_list))
+```
+
+# Apply
+
+Utilizando el siguiente dataset
+
+```{r}
+myMA <- matrix(rnorm(100000), 10000, 10, dimnames=list(1:10000, paste("C", 1:10, sep="")))
+```
+
+## Calcula la media para fila en la matriz myMA
+
+```{r}
+rowMeans <- apply(myMA, 1, mean)
+```
+
+## Calcula la media para cada columna en la matriz
+
+```{r}
+colMeans <- apply(myMA, 2, mean)
+```
+
+## Calcula las filas de la matriz anterior que contienen missing values NA. Antes de calcularlos recuerda (na.rm=T).
+
+# Sapply
+
+```{r}
+d1 <- cbind(c(1:5),c(1,5,2,7,14),c(11:15))
+```
+
+## Sustituye los números 1,2,7 y 14 por su palabra en alemán “eins”,”zwei”,”sieben” y “vierzehn” utilizando sapply().
+
+```{r}
+d2 <- sapply(d1, function(x) {switch(as.character(x),
+                                     "1" = "eins",
+                                     "2" = "zwei",
+                                     "7" = "sieben",
+                                     "14" = "vierzehn")})
+```
+
+
+## Carga la librería lattice y mira que dimensión tiene el dataset barley y que tipo de objeto es.
+
+```{r}
+library(lattice)
+class(barley)
+dim(barley)
+```
+
+
+## Averigua cuantos campos componen el objeto
+
+```{r}
+str(barley)
+```
+
+## Obtén con lapply() la longitud de cada uno de los elementos de la lista. Sugerencia: unique()
+
+```{r}
+
+```
+
+
+## Obtén el resultado anterior en un vector
+
+# Table
+
+## Cuenta el numero de entradas idénticas en la variable  Sepal.Length del dataset iris.
+
+```{r}
+table(iris$Sepal.Length)
+```
+
+# Exploratory Data Analysis
+
+## Descargate el  dataset hip con el siguiente commando
+
+```{r}
+hip <- read.table("http://astrostatistics.psu.edu/datasets/HIP_star.dat", header=T,fill=T)
+```
+
+## Una vez descargado comprueba la dimensión y los nombres de las columnas del dataset. ¿Qué dimensión tiene? ¿qué datos alberga?
+## Muestra por pantalla la columna de la variable RA
+## Calcula las tendencias centrales de todos los datos del dataset (mean, media) utilizando la function apply
+## Haz lo mismo para las medidas de dispersión mínimo y máximo. ¿Seria posible hacerlo con un único comando?¿Que hace la función range()
+## Sin embargo las medidas mas populares de dispersión son la varianza (var()), su desviación standard (sd()) y la desviación absoluta de la mediana o MAD. Calcula estas medidas para los valores de RA
+## Imagina que quieres calcular dos de estos valores de una sola vez. ¿Te serviría este código?
+
+```{r, eval = FALSE}
+f = function(x) c(median(x), mad(x))  
+f(hip[,1])
+```
+
+## ¿Cuál sería el resultado de aplicar apply(hip,2,f)?
+## Vamos a medir la dispersión de la muestra utilizando el concepto de cuartiles. El percentil 90 es aquel dato que excede en un 10% a todos los demás datos. El cuartil (quantile) es el mismo concento, solo que habla de proporciones en vez de porcentajes. De forma que el percentil 90 es lo mismo que el cuartil 0.90. La mediana “median” de un dataset es el valor más central, en otras palabras exactamente la mitad del dataset excede la media. Calcula el cuartil .10 y .50 para la columna RA del dataset hip. Sugerencia: quantile()
+
+## Los cuantiles 0.25 y 0.75 se conocen como el  first quartile y el third quartile, respectivamente. Calcula los cuatro cuartiles para RA con un único comando.
+## Otra medida de dispersion es la diferencia entre el primer y el tercer cuartil conocida como rango intercuartil (IQR) Inter Quantile Range. ¿Obtienes ese valor con la función summary()?
+
+## Hasta ahora has ignorado la presencia de  valores perdidos NA. La función any() devuelve TRUE si se encuentra al menos un TRUE en el vector que damos como argumento. Su combinación con is.na es muy útil. ¿qué obtienes cuando ejecutas el siguiente comando? ¿Cómo lo interpretas?
+
+hasNA = function(x) any(is.na(x)) 
+apply(hip,2,hasNA)   
+## Prueba a ejecutar el siguiente comando.
+
+## Como has observado  nos devuelve NA para toda la columna,  normalmente querríamos poder usar la función sobre el resto de datos que no son NA: Para ello podemos utilizar la función na.omit. ¿Que ocurre cuando lo hacemos?. Usando apply calcula la media para hip y hip1. Intenta calcular la media de forma que solo cambie la de B.V cuando ignores los valores NA.
+
+## Obten una idea aproximada de tus datos mediante la creación de un boxplot del hop dataset
+
+##Crea un scatterplot que te compare los valores de RA y DE. Representa los puntos con el símbolo ‘.’ Y que estos puntos sean de color rojo si DE excede de 0. Sugerencia ifelse()
+
+## Haz un scatterplot de RA y pmRA. ¿Ves algún patrón?
+## En vez de crear los plots por separado para cada par de columnas, hazlos con un solo comando con el scatterplot matrix
+## Para poder acceder a las variables por su nombre usa attach(hip).Vamos a seleccionar las estrellas Hyadas del dataset aplicando los siguientes filtros:
+
+* RA in the range (50,100) 
+* DE in the range (0,25) 
+* pmRA in the range (90,130) 
+* pmDE in the range (-60,-10) 
+* e_Plx <5 
+* Vmag >4 OR B.V <0.2 (this eliminates 4 red giants) 
+
+## Crea un nuevo dataset con la aplicación de estos filtro. El Nuevo dataset se llama hyades. ¿Que dimensiones tiene? Grafica un scatterplot de Vmag vs B.V
+
+## Vamos a utilizar el ejemplo del dataset iris que está incluido en la distribución de R. Inspecciona las primeras filas del dataset y calcula el summary() del mismo con cada atributo del dataset
+
+```{r}
+iris[1:4,]
+summary(iris)
+```
+
+## Crea un histograma de petal.width , teniendo en cuenta que el numero de bins es variable fija este a 9. Añádele color y nombres al eje x "Petal Width"y al gráfico dale el nombre de  "Histogram of Petal Width". Crea un histograma para cada variable
+
+```{r}
+ggplot(iris, aes(Petal.Width)) + geom_histogram(aes(fill = ..count..),bins = 9) + ggtitle("Histogram of Petal Width")
+ggplot(iris, aes(Petal.Length)) + geom_histogram(aes(fill = ..count..),bins = 9) + ggtitle("Histogram of Petal Length")
+ggplot(iris, aes(Sepal.Width)) + geom_histogram(aes(fill = ..count..),bins = 9) + ggtitle("Histogram of Sepal Width")
+ggplot(iris, aes(Sepal.Length)) + geom_histogram(aes(fill = ..count..),bins = 9) + ggtitle("Histogram of Sepal Length")
+ggplot(iris, aes(Species)) + geom_bar(aes(fill = ..count..))
+```
+
+
+## Crea los cuartiles del dataset
+
+```{r}
+
+```
+
+## Representa en un boxplot la variable de ancho de hoja dependiendo del tipo de hoja que tengan
+
+```{r}
+
+```
+
+## Crea los cuartiles para cada tipo de iris y represéntalos en un plot como líneas cada una de un color
+
+
+
+## Crea los boxplot de la longitud del pétalo en función de la especie de Iris.
+## Compara con scatter plots las variables entre sí.
+
+```{r}
+ggpairs(iris, aes(color = Species), bins = 9)
+```
+

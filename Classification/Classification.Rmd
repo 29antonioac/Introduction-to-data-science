@@ -1,0 +1,34 @@
+---
+title: "Classification"
+author: "Antonio Álvarez Caballero"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(GGally)
+```
+
+# Playing
+
+```{r}
+wbcd <- read.csv("wisc_bc_data.csv", stringsAsFactors = FALSE)
+wbcd <- wbcd[,-1]
+
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+
+wbcd_n <- as.data.frame(lapply(wbcd[,2:31], normalize))
+```
+
+```{r}
+ggpairs(wbcd_n[,2:5])
+```
+
+```{r}
+table()
+```
+
+

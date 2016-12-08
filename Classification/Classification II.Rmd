@@ -1,0 +1,81 @@
+---
+title: "Classification II"
+author: "Antonio Álvarez Caballero"
+date: "17 de noviembre de 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(GGally)
+library(caret)
+library(MASS)
+library(ISLR)
+# library(klaR)
+```
+
+# Class
+
+```{r}
+train <- createDataPartition(iris$Species, p = 0.8, list = FALSE)
+data.train <- iris[train,]
+data.test <- iris[-train,]
+train.control <- trainControl(method = "cv")
+lda.fit <- train(Species~., data=data.train, 
+                   method="lda",
+                   preProcess = c("center","scale"),
+                   trControl=train.control)
+
+confusionMatrix(lda.fit)
+
+qda.fit <- train(Species~., data=data.train, 
+                   method="qda",
+                   preProcess = c("center","scale"),
+                   trControl=train.control)
+
+confusionMatrix(qda.fit)
+```
+
+# Exercise 1 (Smarket data)
+
+```{r}
+train <- createDataPartition(Smarket$Direction, p = 0.8, list = FALSE)
+data.train <- Smarket[train,]
+data.test <- Smarket[-train,]
+train.control <- trainControl(method = "cv")
+lda.fit <- train(Direction~., data=data.train, 
+                   method="lda",
+                   preProcess = c("center","scale"),
+                   trControl=train.control)
+
+confusionMatrix(lda.fit)
+
+qda.fit <- train(Direction~., data=data.train, 
+                   method="qda",
+                   preProcess = c("center","scale"),
+                   trControl=train.control)
+
+confusionMatrix(qda.fit)
+
+glm.fit <- train(Direction~., data=data.train, 
+                   method="glmnet",
+                   preProcess = c("center","scale"),
+                   family = "binomial",
+                   trControl=train.control)
+
+confusionMatrix(glm.fit)
+```
+
+
+```{r}
+results <- resamples(list(LDA=lda.fit, QDA=qda.fit, GLM=glm.fit))
+# summarize the distributions
+summary(results)
+# boxplots of results
+bwplot(results)
+# dot plots of results
+dotplot(results)
+```
+
+
